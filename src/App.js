@@ -1,24 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useContext } from 'react';
 import './App.css';
 
-function App() {
+import GlobalState from './state/GlobalState';
+
+import StartGame from './components/StartGame';
+import PlayGame from './components/PlayGame';
+import GameResults from './components/GameResults';
+
+const ScreenManager = props => {
+  const { state } = useContext(GlobalState.Context);
+  let content;
+  switch(state.status) {
+    case GlobalState.gameStatus.STARTED:
+    default:
+      content = <StartGame />;
+      break;
+    case GlobalState.gameStatus.PLAYING:
+      content = <PlayGame target={state.targetNumber} />
+      break;
+    case GlobalState.gameStatus.FINISHED:
+      content = <GameResults />
+      break;
+  }
+
+  return (
+    <div>
+      {content}
+    </div>
+  );
+};
+
+const App = props => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <GlobalState.Provider>
+        <ScreenManager />
+      </GlobalState.Provider>
     </div>
   );
 }
